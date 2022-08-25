@@ -8,17 +8,17 @@ interface AbilityNodeOwnProps {
   className?: string;
   index: number;
   currentIndex: number;
-  rowNumber: number;
+  rowNumber: string;
   rowNodes: boolean[];
 }
 
 type AbilityNodeProps = AbilityNodeOwnProps;
 
-function makeNodeColor(rowNumber: number, disabled?: boolean) {
-  return rowNumber < 3 ? `rgba(0, 128, 185, ${disabled ? 0.26 : 1})` : `rgba(192, 68, 68, ${disabled ? 0.26 : 1})`;
+function makeNodeColor(rowNumber: string, disabled?: boolean) {
+  return rowNumber === 'r3' ? `rgba(0, 128, 185, ${disabled ? 0.26 : 1})` : `rgba(192, 68, 68, ${disabled ? 0.26 : 1})`;
 }
 
-const StyledCheckbox = styled(Checkbox)<CheckboxProps & { rownumber: number }>(({ rownumber }) => ({
+const StyledCheckbox = styled(Checkbox)<CheckboxProps & { rownumber: string }>(({ rownumber }) => ({
   transform: 'rotate(45deg)',
   color: makeNodeColor(rownumber),
   pointerEvents: 'none',

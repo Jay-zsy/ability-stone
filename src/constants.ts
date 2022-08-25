@@ -6,22 +6,25 @@ export type RowType = 'ABILITY' | 'MALICE';
 
 interface IRow {
   type: RowType;
-  rowNumber: number;
+  rowNumber: string;
   facets: Array<boolean>;
 }
 
 interface IRows extends Array<IRow>{}
 
 export const rows: IRows = [
-  { type: 'ABILITY', rowNumber: 1, facets: [] },
-  { type: 'ABILITY', rowNumber: 2, facets: [] },
-  { type: 'MALICE', rowNumber: 3, facets: [] },
+  { type: 'ABILITY', rowNumber: 'r1', facets: [] },
+  { type: 'ABILITY', rowNumber: 'r2', facets: [] },
+  { type: 'MALICE', rowNumber: 'r3', facets: [] },
 ];
 
 export interface IFC {
   r1: boolean[],
   r2: boolean[],
   r3: boolean[],
+  [key: string]: boolean[],
 }
 
-export type FacetHistory = Array<{ rowNumber: number, facet: boolean }>;
+export type FacetHistory = Array<{ rowNumber: string, facet: boolean, pIndex: number }>;
+
+export const probability = [ 0.75, 0.65, 0.55, 0.45, 0.35, 0.25 ];
