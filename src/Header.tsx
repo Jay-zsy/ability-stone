@@ -1,55 +1,37 @@
-import { IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
-import { FacetHistory, IFC, MaxNumOfNodes, maxNumOfNodes } from './constants';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Replay, Undo } from '@mui/icons-material';
+import { IconButton, MenuItem, Select, SelectChangeEvent, Typography } from '@mui/material';
+
+import { getAbilityStoneState } from './ability-stone-selector';
+import { changeMaxNodesAC, resetNodes, undoFacetNodeAC } from './ability-stone-slice';
+import { maxNumOfNodes, probability } from './constants';
+import { numToPercent } from './helpers';
 import { FlexDiv } from './styled-components';
 
-
-interface HeaderOwnProps {
-  maxNodes: MaxNumOfNodes;
-  history: FacetHistory;
-  setMaxNodes: React.Dispatch<React.SetStateAction<MaxNumOfNodes>>;
-  setHistory: React.Dispatch<React.SetStateAction<FacetHistory>>;
-  setFacetedNodes: React.Dispatch<React.SetStateAction<IFC>>;
-}
+interface HeaderOwnProps {}
 
 type HeaderProps = HeaderOwnProps;
 
 
 function Header(props: HeaderProps) {
-  const { maxNodes, history, setMaxNodes, setHistory, setFacetedNodes } = props;
+  // const {  } = props;
+
+  const { maxNodes, pIndex } = useSelector(getAbilityStoneState);
+  const dispatch = useDispatch();
 
   const maxNodesOnChange = useCallback((e: SelectChangeEvent) => {
-    const value = Number(e.target.value) as MaxNumOfNodes;
-    if (value <= 10  && value >= 6) {
-      setMaxNodes(() => value);
-    }
-  }, [setMaxNodes]);
+    dispatch(changeMaxNodesAC({ number: Number(e.target.value)}))
+  }, [dispatch]);
 
   const undoOnClick = useCallback(() => {
-    if (!history.length) {
-      return;
-    }
-    // console.log(history.length)
-    let row: number | undefined = undefined;
-    setHistory((ps) => {
-      const temp = ps;
-      row = temp.pop()?.rowNumber;
-      console.log(temp)
-      return temp;
-    });
-    const rowNum = `r${row}` as keyof IFC;
-    setFacetedNodes((ps) => {
-      const r = ps[rowNum];
-      r.pop();
-      return { ...ps, [rowNum]: r };
-    });
-  }, [history.length, setFacetedNodes, setHistory]);
+    dispatch(undoFacetNodeAC());
+  }, [dispatch]);
 
   const resetOnClick = useCallback(() => {
-    setHistory(() => []);
-    setFacetedNodes(() => { return { r1: [], r2: [], r3: [] }; });
-  }, [setFacetedNodes, setHistory]);
+    dispatch(resetNodes());
+  }, [dispatch]);
 
   return (
     <FlexDiv>
@@ -65,6 +47,25 @@ function Header(props: HeaderProps) {
       <IconButton onClick={resetOnClick}>
         <Replay/>
       </IconButton>
+      <Typography>
+        {'Next'}
+      </Typography>
+      <FlexDiv orientation='vertical'>
+        <Typography>
+          {'Success'}
+        </Typography>
+        <Typography>
+          {numToPercent(probability[pIndex])}
+        </Typography>
+      </FlexDiv>
+      <FlexDiv orientation='vertical'>
+        <Typography>
+          {'Fail'}
+        </Typography>
+        <Typography>
+          {numToPercent(1 - probability[pIndex])}
+        </Typography>
+      </FlexDiv>
     </FlexDiv>
   );
 }

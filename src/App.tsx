@@ -1,11 +1,13 @@
 import React from 'react';
+
 import Container from './Container';
+import { ContainerDiv } from './styled-components';
 
 function App() {
   return (
-    <div>
+    <ContainerDiv>
       <Container />
-    </div>
+    </ContainerDiv>
   );
 }
 

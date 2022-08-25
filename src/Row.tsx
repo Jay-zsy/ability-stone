@@ -1,29 +1,33 @@
-import { IconButton } from '@mui/material';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { IFC, RowType } from './constants';
-import StarIcon from '@mui/icons-material/Star';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Check, Close } from '@mui/icons-material';
+import StarIcon from '@mui/icons-material/Star';
+import { IconButton } from '@mui/material';
+
+import { getAbilityStoneState } from './ability-stone-selector';
+import { facetNodeAC } from './ability-stone-slice';
 import AbilityNodes from './AbilityNodes';
+import { RowType } from './constants';
 import { FlexDiv } from './styled-components';
 
 interface RowOwnProps {
   className?: string;
   type?: RowType;
-  maxNodes: number;
-  facet: (rowNumber: number, facet: boolean) => void;
-  rowNumber: number;
-  facetedNodes: IFC;
+  rowNumber: string;
 }
 
 type RowProps = RowOwnProps;
 
 function Row(props: RowProps) {
-  const { className, maxNodes, facet, rowNumber, facetedNodes } = props;
+  const { className, rowNumber } = props;
+
+  const { maxNodes, facetedNodes } = useSelector(getAbilityStoneState);
+  const dispatch = useDispatch();
 
   const rowNodes = useMemo(() => {
-    const idxKey = `r${rowNumber}` as keyof IFC;
-    return facetedNodes[idxKey];
+    return facetedNodes[rowNumber];
   }, [facetedNodes, rowNumber]);
 
   const [idx, setIdx] = useState(rowNodes.length);
@@ -33,12 +37,12 @@ function Row(props: RowProps) {
   }, [rowNodes.length])
   
   const successFacetOnClick = useCallback(() => {
-    facet(rowNumber, true);
-  }, [facet, rowNumber]);
+    dispatch(facetNodeAC({rowNumber, facet: true}));
+  }, [dispatch, rowNumber]);
 
   const failFacetOnClick = useCallback(() => {
-    facet(rowNumber, false);
-  }, [facet, rowNumber]);
+    dispatch(facetNodeAC({rowNumber, facet: false}));
+  }, [dispatch, rowNumber]);
 
   return (
     <FlexDiv className={classNames(className)}>

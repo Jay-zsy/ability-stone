@@ -4,7 +4,7 @@ import AbilityNode from './AbilityNode';
 interface AbilityNodesOwnProps {
   maxNodes: number;
   currentIndex: number;
-  rowNumber: number;
+  rowNumber: string;
   rowNodes: boolean[];
 }
 
